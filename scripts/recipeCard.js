@@ -1,17 +1,24 @@
 //Fetch date from the json file
 
-async function fetchRecipes() {
-    try {
-        // Import recipes from the recipes.js file
-        const { recipes } = await import('../assets/json/recipes.js');
+// async function fetchRecipes() {
+//     try {
+//         // Import recipes from the recipes.js file
+//         const { recipes } = await import('../assets/data/recipes.js');
+//         console.log(recipes);
+//         return recipes;
         
-        return recipes;
-        
-    } catch (error) {
-        console.error('Error fetching recipes:', error);
-        return null;
-    }
-}
+//     } catch (error) {
+//         console.error('Error fetching recipes:', error);
+//         return null;
+//     }
+// }
+
+//import { recipes } from '../assets/data/recipes.js';
+
+console.log(recipes);
+
+
+
 
 //Create the recipe cards
 
@@ -51,19 +58,32 @@ function RecipeCard(recipe) {
     };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    fetchRecipes().then(recipes => {
-        if (recipes) {
-            const recipeList = document.querySelector('.recipeList'); // Select the recipeList section
-            console.log(recipeList);
-            recipes.forEach(recipe => {
-                // Adjust image URL path
-                recipe.image = `assets/images/${recipe.image}`;
 
-                const card = new RecipeCard(recipe);
-                const cardHTML = card.generateCardHTML();
-                recipeList.innerHTML += cardHTML; // Append the card HTML to the recipeList section
-            });
-        }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const recipeList = document.querySelector('.recipeList');
+    recipes.forEach(recipe => {
+        recipe.image = `assets/images/${recipe.image}`;
+
+        const card = new RecipeCard(recipe);
+        const cardHTML = card.generateCardHTML();
+        recipeList.innerHTML += cardHTML;
     });
 });
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     fetchRecipes().then(recipes => {
+//         if (recipes) {
+//             const recipeList = document.querySelector('.recipeList'); // Select the recipeList section
+//             console.log(recipeList);
+//             recipes.forEach(recipe => {
+//                 // Adjust image URL path
+//                 recipe.image = `assets/images/${recipe.image}`;
+
+//                 const card = new RecipeCard(recipe);
+//                 const cardHTML = card.generateCardHTML();
+//                 recipeList.innerHTML += cardHTML; // Append the card HTML to the recipeList section
+//             });
+//         }
+//     });
+// });
