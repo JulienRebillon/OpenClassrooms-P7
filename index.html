@@ -17,17 +17,39 @@
         </div>
         <div class="header_container">
             <h1>Cherchez parmi plus de 1500 recettes </br>du quotidien, simples et délicieuses</h1>
-            <div class="searchbar">
+            <form class="searchbar">
                 <input class="search" placeholder="Recherchez une recette, un ingrédient, ...">
                 <button class="searchBtn">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
-            </div>
+            </form>
         </div>
     </header>
     <main id="main" role="main">
 
-        <section class="filters">
+        <section class="dropdown-container">
+            <div class="dropdown">
+                <select name="category" id="category">
+                    <option value="ingredients">Ingrédients</option>
+                    
+                </select>
+            </div>
+            <div class="dropdown">
+                <select name="category" id="category">
+                    <option value="ingredients">Appareils</option>
+                    
+                </select>
+            </div>
+            <div class="dropdown">
+                <select name="category" id="category">
+                    <option value="ingredients">Ustensils</option>
+                    
+                </select>
+            </div>
+
+        </section>
+
+        <section class="tags">
 
         </section>
 

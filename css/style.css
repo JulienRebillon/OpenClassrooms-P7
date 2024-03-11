@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     background-color: #EDEDED;
+    list-style-type: none;
 }
 
 body {
@@ -133,33 +134,86 @@ main {
 
 
 
-.card-text {
-    font-family: Manrope;
+/* DROPDOWN */
+
+.dropdown-container {
+    display: flex;
 }
 
-.card-text img{
-    height: 255px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+.dropdown {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.dropdown:focus {
+    outline: solid green;
+}
+
+
+
+/* SEARCH TAGS*/
+
+.search-tags {
+    width: 100%;
+    padding: 60px;
+}
+
+.tag {
+    background-color: #FFD15B;
+    border-radius: 10px;
+    padding: 5px 10px;
+    display: inline-block;
+    margin: 10px;
+}
+
+.tags {
+    margin-bottom: 20px;
+}
+
+.tag span {
+    font-size: 16px;
+}
+
+.tag b {
+    padding-bottom: 10px;
 }
 
 
 /* CARD */
 
+
+.card, .card-content, .card-title, h3, .card-text, ul, li {
+    background-color: white;
+}
+
 .card {
     width: 380px;
-    height: 750px;
-    background-color: white;
+    height: 850px;
+    
     border-radius: 15px;
     position: relative;    
 }
 
-
-.card-text {
-    font-family: Manrope;
+.card-content {
+    
+    padding-left: 20px;
+    padding-right: 20px;
+    
 }
 
-
+.card-time {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-family: Manrope;
+    font-size: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 15px;
+    background-color: #FFD15B;
+}
 
 
 .card img {
@@ -168,4 +222,28 @@ main {
     object-fit: cover;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 100;
+}
+
+h3 {
+    font-size: 18px;
+    color: #7a7a7a;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.card-text {    
+    font-family: Manrope;
+    color:#1B1B1B;
+    font-size: 16px;
+    font-weight: 100px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4; /* Limit the text to four lines */
+    overflow: hidden; /* Hide overflow text */
+    max-height: 4 * 1.2em; /* Calculate max-height based on line height */
 }
