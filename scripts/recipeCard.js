@@ -31,7 +31,7 @@ function outputTag () {
     const tag = `<span class="tag">
     <b>${tagFormat}</b>
     <span class="remove-btn">
-        close
+        <i class="fa-solid fa-xmark"></i>
     </span>
     </span>`;
 
@@ -71,8 +71,8 @@ searchbar.addEventListener('submit', e => {
 
 //Function to close the tags
 window.addEventListener('click', e => {
-    if (e.target.classList.contain('remove-btn')) {
-        e.target.patentElement.remove ();
+    if (e.target.classList.contains('remove-btn')) {
+        e.target.parentElement.remove ();
         //disable the output {
             input.disabled = false;
         //Modify placeholder text
@@ -135,20 +135,69 @@ function RecipeCard(recipe) {
 
 // Search function
 
+
+
+// function filterCards() {
+//     const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
+//     const cards = document.querySelectorAll('.card');
+
+//     //Search for ingredients
+//     cards.forEach(card => {
+//         const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
+//         const matchesAllTags = tags.every(tag => cardIngredients.includes(tag));
+//         card.style.display = matchesAllTags ? 'block' : 'none';
+//     });
+// }
+
 function filterCards() {
-    const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim());
+    // Get the tags, trimming whitespace from each tag
+    let tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
     const cards = document.querySelectorAll('.card');
+    
+
+    console.log('Tags:', tags);
 
     cards.forEach(card => {
-        const cardText = card.querySelector('.card-text').textContent.trim().toLowerCase();
-        const matchesAllTags = tags.every(tag => cardText.includes(tag.toLowerCase()));
-        card.style.display = matchesAllTags ? 'block' : 'none';
+        // Get the card name and description, trimming whitespace from each
+        const cardName = card.querySelector('.card-title').textContent.trim().toLowerCase();
+        const cardDescription = card.querySelector('.card-text').textContent.trim().toLowerCase();
+        
+        // Get the card ingredients, trimming whitespace from each
+        const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
+
+        // Combine all card content into an array
+        const cardContent = [cardName, cardDescription, ...cardIngredients];
+
+        console.log('CardContent:', cardContent);
+
+        // Check if any tag matches any content
+
+        const matchesAnyTag = tags.some(tag => cardContent.includes(tag));
+
+        console.log('MatchesAnyTag:', matchesAnyTag);
+
+        // Set display style based on matching tags
+        card.style.display = matchesAnyTag ? 'block' : 'none';
     });
 }
 
-// Add an event listener to the output container to call the filter function whenever tags are added or removed
-output.addEventListener('DOMNodeInserted', filterCards);
-output.addEventListener('DOMNodeRemoved', filterCards);
+
+
+
+
+
+
+
+
+// Define the function to observe changes in the output container
+function observeOutputChanges() {
+    const observer = new MutationObserver(filterCards);
+    observer.observe(output, { childList: true });
+}
+
+// Call the function to observe changes in the output container
+observeOutputChanges();
+
 
 
 

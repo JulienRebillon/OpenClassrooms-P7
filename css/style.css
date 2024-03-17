@@ -50,11 +50,12 @@ header {
 
 .logo_container {
     width: 100%;
+    position: relative;
     z-index: 5;
 }
 
 .logo_container a {
-    z-index: 5;
+   
 }
 
 .header_container {
@@ -111,9 +112,22 @@ input {
 }
 
 .searchBtn i {
-    
+    background-color: #1B1B1B;
+    color: white;
     height: 40px;
     width: 40px;
+    padding-top: 12px;
+}
+
+.searchBtn i:hover {
+    background-color: #FFD15B;
+    color: black;
+}
+
+.searchBtn i::before {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
 }
 
 
@@ -163,7 +177,14 @@ main {
     border-radius: 10px;
     padding: 5px 10px;
     display: inline-block;
-    margin: 10px;
+    margin: 15px;
+    
+}
+
+.tag > * {
+    display: inline-flex; /* Align child elements in a row */
+    align-items: center; 
+
 }
 
 .tags {
@@ -174,8 +195,32 @@ main {
     font-size: 16px;
 }
 
+.tag b, .remove-btn {
+    background-color: #FFD15B;
+}
+
 .tag b {
-    padding-bottom: 10px;
+    font-weight: lighter;
+    padding-right: 15px;
+    padding-left: 5px;
+}
+
+.remove-btn {
+    display: inline-block; /* Ensure the span takes up the entire width */
+    /* padding: 0px 5px;  */
+    width: 20px;
+    height: 20px;
+}
+
+.remove-btn i {
+    display: block;
+    background-color: #FFD15B;
+    color: black;
+    /* width: 20px;
+    height: 20px; */
+    width: 100%; /* Make the icon fill the entire width of the parent span */
+    height: 100%; /* Make the icon fill the entire height of the parent span */
+    margin-top: 3px;
 }
 
 
