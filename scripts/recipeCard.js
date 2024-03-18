@@ -69,6 +69,60 @@ searchbar.addEventListener('submit', e => {
 });
 
 
+//Function to reserve the chevron in dropdown menus
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+//     dropdownToggles.forEach(function(toggle) {
+//         toggle.addEventListener('click', function() {
+//             const chevron = toggle.querySelector('.fa-chevron-down');
+//             chevron.classList.toggle('rotate180');
+//         });
+//     });
+// });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(function(toggle) {
+        let isOpen = false;
+        
+        toggle.addEventListener('click', function() {
+            const chevron = toggle.querySelector('.fa-chevron-down');
+            const menu = toggle.nextElementSibling;
+            
+            if (isOpen) {
+                menu.classList.remove('show');
+                chevron.classList.remove('rotate180');
+            } else {
+                menu.classList.add('show');
+                chevron.classList.add('rotate180');
+            }
+            
+            isOpen = !isOpen;
+        });
+        
+        // Close the dropdown menu when clicking outside of it
+        document.addEventListener('click', function(event) {
+            if (!toggle.contains(event.target)) {
+                const chevron = toggle.querySelector('.fa-chevron-down');
+                const menu = toggle.nextElementSibling;
+                
+                menu.classList.remove('show');
+                chevron.classList.remove('rotate180');
+                
+                isOpen = false;
+            }
+        });
+    });
+});
+
+
+
+
+
+
 //Function to close the tags
 window.addEventListener('click', e => {
     if (e.target.classList.contains('remove-btn')) {
