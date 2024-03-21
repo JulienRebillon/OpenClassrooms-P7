@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 //Function to close the tags
+
 window.addEventListener('click', e => {
     if (e.target.classList.contains('remove-btn')) {
         e.target.parentElement.remove ();
@@ -134,6 +135,19 @@ window.addEventListener('click', e => {
 
     }
 })
+
+// // Event listener to handle tag removal
+// output.addEventListener('click', function(event) {
+//     // Check if the clicked element has the class 'remove-btn'
+//     if (event.target.classList.contains('remove-btn')) {
+//         // Remove the parent element (the tag)
+//         event.target.parentElement.parentElement.remove();
+//         // Enable the search input
+//         input.disabled = false;
+//         // Reset the placeholder text
+//         input.placeholder = "Ajouter un critère";
+//     }
+// });
 
 
 
@@ -152,6 +166,37 @@ function RecipeCard(recipe) {
     this.ustensils = recipe.ustensils;
 
     // Method to generate HTML for the card
+    // this.generateCardHTML = function() {
+    //     let cardHTML = `
+    //         <div class="card">
+    //             <img src="${this.image}" alt="${this.name}" class="card-img-top">
+    //             <div class="card-content">
+    //                 <p class="card-time">${this.time}min</p>
+    //                 <div class="card-body">
+    //                     <h2 class="card-title">${this.name}</h2>
+    //                     <h3 class="rubrique">RECETTE</h3>
+    //                     <p class="card-text">${this.description}</p>
+                        
+    //                     <h3>INGREDIENTS</h3>
+    //                     <div class="ingredient-columns">`;
+
+    //     // Start first column
+    //     cardHTML += `<div class="ingredient-column">`;
+
+    //     // Add ingredients to the first column
+    //     cardHTML += `<ul class="ingredient-list">`;
+    //     this.ingredients.forEach((ingredient, index) => {
+    //         // Check if it's time to start the second column
+    //         if (index === Math.ceil(this.ingredients.length / 2)) {
+    //             cardHTML += `</ul></div><div class="ingredient-column"><ul class="ingredient-list">`;
+    //         }
+    //         cardHTML += `<li>${ingredient.ingredient}${ingredient.quantity ? `: ${ingredient.quantity}` : ''}${ingredient.unit ? ` ${ingredient.unit}` : ''}</li>`;
+    //     });
+    //     cardHTML += `</ul></div></div></div></div></div>`;
+
+    //     return cardHTML;
+    //};
+
     this.generateCardHTML = function() {
         let cardHTML = `
             <div class="card">
@@ -164,25 +209,79 @@ function RecipeCard(recipe) {
                         <p class="card-text">${this.description}</p>
                         
                         <h3>INGREDIENTS</h3>
-                        <div class="ingredient-columns">`;
-
-        // Start first column
-        cardHTML += `<div class="ingredient-column">`;
-
-        // Add ingredients to the first column
-        cardHTML += `<ul class="ingredient-list">`;
-        this.ingredients.forEach((ingredient, index) => {
-            // Check if it's time to start the second column
-            if (index === Math.ceil(this.ingredients.length / 2)) {
-                cardHTML += `</ul></div><div class="ingredient-column"><ul class="ingredient-list">`;
-            }
-            cardHTML += `<li>${ingredient.ingredient}${ingredient.quantity ? `: ${ingredient.quantity}` : ''}${ingredient.unit ? ` ${ingredient.unit}` : ''}</li>`;
+                        <div class="ingredient-container">`;
+    
+        // Add ingredients to the ingredient container
+        cardHTML += `<div class="ingredient-list">`;
+        this.ingredients.forEach(ingredient => {
+            cardHTML += `
+                <div class="ingredient">
+                    <div class="ingredient-name">${ingredient.ingredient}</div>
+                    <div class="ingredient-details">${ingredient.quantity ? `${ingredient.quantity} ${ingredient.unit || ''}` : ''}</div>
+                </div>`;
         });
-        cardHTML += `</ul></div></div></div></div></div>`;
-
+        cardHTML += `</div></div></div></div></div>`;
+    
         return cardHTML;
     };
+    
 }
+
+
+// Dropdown menu filter function
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const dropdownSearchInput = document.querySelector('.dropdown-search');
+    const dropdownItems = dropdownMenu.querySelectorAll('li');
+
+    dropdownToggle.addEventListener('click', function() {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    dropdownSearchInput.addEventListener('input', function() {
+        const searchValue = dropdownSearchInput.value.toLowerCase();
+        
+        // Start from index 1 to exclude the first <li> (search input)
+        for (let i = 1; i < dropdownItems.length; i++) {
+            const item = dropdownItems[i];
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchValue)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+        
+        dropdownMenu.classList.add('show'); // Ensure the dropdown menu stays open
+    });
+});
+
+
+
+//Search tag created from Ingrédients/Appareils/ustensils dropdown menus.
+
+// Get all the li elements, excluding the first one
+const liElements = document.querySelectorAll('.dropdown-menu li:not(:first-child)');
+
+// Attach click event listener to each li element
+liElements.forEach(li => {
+    li.addEventListener('click', function() {
+        // Get the text content of the clicked li element
+        const tagText = this.textContent.trim();
+        
+        // Create the tag element
+        const tag = document.createElement('span');
+        tag.classList.add('tag');
+        tag.innerHTML = `<b>${tagText}</b><span class="remove-btn"><span class="remove-btn">
+        <i class="fa-solid fa-xmark"></i>
+    </span></span>`;
+        
+        // Append the tag to the output container
+        output.appendChild(tag);
+    });
+});
 
 
 
@@ -220,7 +319,8 @@ function filterCards() {
         const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
 
         // Combine all card content into an array
-        const cardContent = [cardName, cardDescription, ...cardIngredients];
+        // const cardContent = [cardName, cardDescription, ...cardIngredients];
+        const cardContent = [cardName];
 
         console.log('CardContent:', cardContent);
 
@@ -234,6 +334,10 @@ function filterCards() {
         card.style.display = matchesAnyTag ? 'block' : 'none';
     });
 }
+
+
+
+
 
 
 

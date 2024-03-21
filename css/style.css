@@ -179,6 +179,7 @@ main {
 .dropdown-toggle p, .dropdown-toggle i {
     background-color: white;
     font-weight: bold;
+
 }
 
 
@@ -211,6 +212,16 @@ main {
     display: block;
 }
 
+.dropdown-menu li:hover {
+    font-weight: bold;
+    background-color: #FFD15B;
+    border-radius: 0px;
+}
+
+.dropdown-menu li:nth-child(n+8) {
+    display: none; /* limit the size of the list*/
+}
+
 /* Chevrons rotation*/
 .fa-chevron-down {
     transition: transform 0.2s ease;
@@ -233,15 +244,24 @@ main {
 .dropdown-search-container {
     width: 180px;
     height: 40px;
-    background-color: aqua;
+    
     z-index: 4;
+    position: relative;
+}
+
+.dropdown-search-container i {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color:#7a7a7a;
+    background-color: white;
 }
 
 .dropdown-search {
     background-color: white;
     border-radius: 0;
     border: 1px gray solid;
-    width: 160px;
+    width: 180px;
     height: 40px;
     
     
@@ -292,8 +312,7 @@ main {
 }
 
 .remove-btn {
-    display: inline-block; /* Ensure the span takes up the entire width */
-    /* padding: 0px 5px;  */
+    display: inline-block;
     width: 20px;
     height: 20px;
 }
@@ -302,10 +321,8 @@ main {
     display: block;
     background-color: #FFD15B;
     color: black;
-    /* width: 20px;
-    height: 20px; */
-    width: 100%; /* Make the icon fill the entire width of the parent span */
-    height: 100%; /* Make the icon fill the entire height of the parent span */
+    width: 100%; 
+    height: 100%; 
     margin-top: 3px;
 }
 
@@ -358,23 +375,52 @@ main {
 .card-title {
     font-size: 20px;
     font-weight: 100;
+    margin-top: 20px;
 }
 
 h3 {
     font-size: 18px;
     color: #7a7a7a;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .card-text {    
     font-family: Manrope;
     color:#1B1B1B;
     font-size: 16px;
-    font-weight: 100px;
+    font-weight: 400;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4; /* Limit the text to four lines */
     overflow: hidden; /* Hide overflow text */
-    max-height: 4 * 1.2em; /* Calculate max-height based on line height */
+    
+}
+
+
+
+.ingredient-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+}
+
+.ingredient {
+    /* width: calc(50% - 5px); Two ingredients per row */
+    width: 170px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.ingredient-details, .ingredient-name {
+    background-color: white;
+}
+
+
+.ingredient-details {
+    margin-top: 5px;
+    color: #7a7a7a;
 }
