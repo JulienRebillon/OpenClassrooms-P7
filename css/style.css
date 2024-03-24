@@ -50,11 +50,17 @@ header {
 
 .logo_container {
     width: 100%;
-    position: relative;
+    position: absolute;
+    top: 50px;
+    left: 50px;
     z-index: 5;
+    background-color: transparent;
 }
 
-
+.logo_container img, .logo_container a {
+    background-color: transparent;
+    
+}
 
 .header_container {
     display: flex;
@@ -66,6 +72,8 @@ header {
     text-align: center;
     background-color: transparent;
 }
+
+
 
 h1 {
     text-align: center;
