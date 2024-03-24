@@ -21,6 +21,7 @@ const output = document.querySelector('.tags');
 const max = document.querySelector('.max');
 
 
+
 console.log(recipes);
 
 
@@ -45,42 +46,74 @@ function outputTag () {
 
 
 //Add a submit event to the form and prevents default behavior.
-searchbar.addEventListener('submit', e => {
-    //check if input is empty
-    if(input.value === "") {
-        //Prevent default form behavior
-        e.preventDefault();
-    }
-    //limit the number of tags to 5
-    else if(output.children.length >= 4) {
-        //Run the outputTag function
-        outputTag();
-        //disable the output {
-            input.disabled = true;
-        //Modify placeholder text
-            input.placeholder = "Nombre maximum de critère de filtrage atteint.";
-        }
-    else {
-        //Run the outputTag function
-        outputTag();
-        //Prevent default form behavior
-        e.preventDefault();
+
+// searchbar.addEventListener('submit', e => {
+//     //check if input is empty
+//     if(input.value === "") {
+//         //Prevent default form behavior
+//         e.preventDefault();
+//     }
+//     //limit the number of tags to 5
+//     else if(output.children.length >= 4) {
+//         //Run the outputTag function
+//         outputTag();
+//         //disable the output {
+//             input.disabled = true;
+//         //Modify placeholder text
+//             input.placeholder = "Nombre maximum de critères de filtrage atteint.";
+//         }
+//     else {
+//         //Run the outputTag function
+//         outputTag();
+//         //Prevent default form behavior
+//         e.preventDefault();
+//     }
+// });
+
+// Add an input event listener to the search input field for 3 characters+ filtering
+input.addEventListener('input', function(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+    
+    const inputValue = input.value.trim().toLowerCase();
+    
+    // Check if the input value has at least 3 characters
+    if (inputValue.length >= 3) {
+        // Execute search function
+        filterCards(inputValue);
     }
 });
 
+// Add an input event listener to the search input field for manual trigger of the search
 
-//Function to reserve the chevron in dropdown menus
+function handleSearch() {
+    // Get the input value
+    const inputValue = input.value.trim();
 
-// document.addEventListener('DOMContentLoaded', function() {
-//     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-    
-//     dropdownToggles.forEach(function(toggle) {
-//         toggle.addEventListener('click', function() {
-//             const chevron = toggle.querySelector('.fa-chevron-down');
-//             chevron.classList.toggle('rotate180');
-//         });
-//     });
-// });
+    // Check if the input value is not empty
+    if (inputValue !== "") {
+        // Call the outputTag function with the input value
+        outputTag(inputValue);
+    }
+}
+
+// Event listener for the Enter key press
+input.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+        // Call the handleSearch function
+        handleSearch();
+    }
+});
+
+// Event listener for the click on the search button
+document.querySelector('.searchBtn').addEventListener('click', handleSearch);
+
+
+
+
+//Function to reverse the chevron in dropdown menus
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
@@ -125,16 +158,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //Function to close the tags
 
-window.addEventListener('click', e => {
-    if (e.target.classList.contains('remove-btn')) {
-        e.target.parentElement.remove ();
-        //disable the output {
-            input.disabled = false;
-        //Modify placeholder text
-        input.placeholder = "Ajouter un critère"; 
+// window.addEventListener('click', e => {
+//     if (e.target.classList.contains('remove-btn')) {
+//         e.target.parentElement.remove ();
+//         //disable the output {
+//         //    input.disabled = false;
+//         //Modify placeholder text
+//         //input.placeholder = "Ajouter un critère"; 
 
+//     }
+// })
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('fa-xmark')) {
+        e.target.closest('.tag').remove();        
     }
-})
+});
+
 
 // // Event listener to handle tag removal
 // output.addEventListener('click', function(event) {
@@ -228,58 +268,67 @@ function RecipeCard(recipe) {
 }
 
 
-// Dropdown menu filter function
+// // Dropdown menu filter function
 
-document.addEventListener('DOMContentLoaded', function() {
-    const dropdownToggle = document.querySelector('.dropdown-toggle');
-    const dropdownMenu = document.querySelector('.dropdown-menu');
-    const dropdownSearchInput = document.querySelector('.dropdown-search');
-    const dropdownItems = dropdownMenu.querySelectorAll('li');
+// Select all dropdown toggles
+const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
+// Iterate over each dropdown toggle
+dropdownToggles.forEach(dropdownToggle => {
+    // Get the corresponding dropdown menu, search input, and items for the current toggle
+    const dropdownMenu = dropdownToggle.nextElementSibling;
+    const dropdownSearchInput = dropdownMenu.querySelector('.dropdown-search');
+    const dropdownItems = dropdownMenu.querySelectorAll('li:not(:first-child)');
+
+    // Add click event listener to the dropdown toggle
     dropdownToggle.addEventListener('click', function() {
         dropdownMenu.classList.toggle('show');
     });
 
+    // Add input event listener to the dropdown search input
     dropdownSearchInput.addEventListener('input', function() {
         const searchValue = dropdownSearchInput.value.toLowerCase();
-        
-        // Start from index 1 to exclude the first <li> (search input)
-        for (let i = 1; i < dropdownItems.length; i++) {
-            const item = dropdownItems[i];
-            const text = item.textContent.toLowerCase();
-            if (text.includes(searchValue)) {
+
+        // Check if the input has at least three characters
+        if (searchValue.length >= 3) {
+            // Start from index 0 to include all dropdown items
+            dropdownItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                // Check if the item's text contains the search value
+                if (text.includes(searchValue)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            dropdownMenu.classList.add('show'); // Ensure the dropdown menu stays open
+        } else {
+            // If the input has less than three characters, reset the display of all items
+            dropdownItems.forEach(item => {
                 item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            });
+
+            dropdownMenu.classList.remove('show'); // Close the dropdown menu
         }
-        
-        dropdownMenu.classList.add('show'); // Ensure the dropdown menu stays open
     });
-});
 
+    // Attach click event listener to each li element within the current dropdown menu
+    dropdownItems.forEach(li => {
+        li.addEventListener('click', function() {
+            // Get the text content of the clicked li element
+            const tagText = this.textContent.trim();
 
+            // Create the tag element
+            const tag = document.createElement('span');
+            tag.classList.add('tag');
+            tag.innerHTML = `<b>${tagText}</b><span class="remove-btn"><span class="remove-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </span></span>`;
 
-//Search tag created from Ingrédients/Appareils/ustensils dropdown menus.
-
-// Get all the li elements, excluding the first one
-const liElements = document.querySelectorAll('.dropdown-menu li:not(:first-child)');
-
-// Attach click event listener to each li element
-liElements.forEach(li => {
-    li.addEventListener('click', function() {
-        // Get the text content of the clicked li element
-        const tagText = this.textContent.trim();
-        
-        // Create the tag element
-        const tag = document.createElement('span');
-        tag.classList.add('tag');
-        tag.innerHTML = `<b>${tagText}</b><span class="remove-btn"><span class="remove-btn">
-        <i class="fa-solid fa-xmark"></i>
-    </span></span>`;
-        
-        // Append the tag to the output container
-        output.appendChild(tag);
+            // Append the tag to the output container
+            output.appendChild(tag);
+        });
     });
 });
 
@@ -290,25 +339,12 @@ liElements.forEach(li => {
 
 
 
-// function filterCards() {
-//     const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
-//     const cards = document.querySelectorAll('.card');
-
-//     //Search for ingredients
-//     cards.forEach(card => {
-//         const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
-//         const matchesAllTags = tags.every(tag => cardIngredients.includes(tag));
-//         card.style.display = matchesAllTags ? 'block' : 'none';
-//     });
-// }
-
 function filterCards() {
     // Get the tags, trimming whitespace from each tag
-    let tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
+    const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
     const cards = document.querySelectorAll('.card');
-    
 
-    console.log('Tags:', tags);
+    let count = 0;
 
     cards.forEach(card => {
         // Get the card name and description, trimming whitespace from each
@@ -319,33 +355,34 @@ function filterCards() {
         const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
 
         // Combine all card content into an array
-        // const cardContent = [cardName, cardDescription, ...cardIngredients];
-        const cardContent = [cardName];
-
-        console.log('CardContent:', cardContent);
+        const cardContent = [cardName, cardDescription, ...cardIngredients];
 
         // Check if any tag matches any content
-
         const matchesAnyTag = tags.some(tag => cardContent.includes(tag));
-
-        console.log('MatchesAnyTag:', matchesAnyTag);
-
+        console.log(matchesAnyTag);
+        
         // Set display style based on matching tags
         card.style.display = matchesAnyTag ? 'block' : 'none';
+        
+        
+        //count = matchesAnyTag.length;
+
+        
+
+        // // Increment the visible recipe count if the card matches the tags and is displayed
+        // if (card.style.display !== 'none') {
+        //     count++;
+        // }
+           
     });
+    console.log(count);
+    //console.log(matchesAnyTag);
+       // count = matchesAnyTag.length;
+
+
+    // Update the recipe count display
+    //updateCountDisplay(count);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Define the function to observe changes in the output container
 function observeOutputChanges() {
@@ -356,8 +393,14 @@ function observeOutputChanges() {
 // Call the function to observe changes in the output container
 observeOutputChanges();
 
+// Display the initial number of recipes
+filterCards();
 
 
+
+
+
+// ------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', function() {
     const recipeList = document.querySelector('.recipeList');
@@ -370,3 +413,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+// Update the number of recipes displayed
+
+function updateCountDisplay(count) {
+    const recipeCountDisplay = document.querySelector('.recipeCountDisplay');    
+    recipeCountDisplay.textContent = `${count} recettes`;    
+}
+
+updateCountDisplay();

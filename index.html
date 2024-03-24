@@ -18,7 +18,7 @@
         </div>
         <div class="header_container">
             <h1>Cherchez parmi plus de 1500 recettes </br>du quotidien, simples et délicieuses</h1>
-            <form class="searchbar">
+            <form class="searchbar" id="searchbar">
                 <input class="search" placeholder="Recherchez une recette, un ingrédient, ...">
                 <button class="searchBtn">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -35,13 +35,8 @@
                     <li>
                         <div class="dropdown-search-container">
                             <input type="search" class="dropdown-search">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </input>
-
-                            <!-- <button class="dropdown-searchBtn">
                                 <i class="fa-solid fa-magnifying-glass"></i>
-                            </button> -->
-
+                            </input>
                         </div>
                     </li>
                     <li>Lait de coco</li>
@@ -112,12 +107,20 @@
                     <li>Menthe</li>
                     <li>Ananas</li>
                     <li>Glace à la vanille</li>
-                    <!-- Add more list items as needed -->
+                    
                 </ul>
             </div>
+            
             <div class="dropdown">
                 <button class="dropdown-toggle"><p>Appareils</p> <i class="fa-solid fa-chevron-down"></i></button>
                 <ul class="dropdown-menu">
+                    <li>
+                        <div class="dropdown-search-container">
+                            <input type="search" class="dropdown-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </input>
+                        </div>
+                    </li>
                     <li>Blender</li>
                     <li>Saladier</li>
                     <li>Cocotte</li>
@@ -125,17 +128,23 @@
                     <li>Four</li>
                     <li>Casserole</li>
                     <li>Poêle à crêpe</li>
-                    <li>Saladier</li>
                     <li>Sauteuse</li>
                     <li>Mixer</li>
                     <li>Poêle</li>
                     <li>Moule à charlotte</li>
-                    <!-- Add more list items as needed -->
+                    
                 </ul>
             </div>
             <div class="dropdown">
                 <button class="dropdown-toggle"><p>Ustensils</p> <i class="fa-solid fa-chevron-down"></i></button>
                 <ul class="dropdown-menu">
+                    <li>
+                        <div class="dropdown-search-container">
+                            <input type="search" class="dropdown-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </input>
+                        </div>
+                    </li>
                     <li>Cuillère à Soupe</li>
                     <li>Verres</li>
                     <li>Presse Citron</li>
@@ -156,14 +165,19 @@
                     <li>Rouleau à patisserie</li>
                     <li>Plaque de cuisson</li>
                     <li>Bol</li>
-                    <!-- Add more list items as needed -->
+                    
                 </ul>
             </div>
 
         </section>
 
-        <section class="tags">
+        <aside class="recipeCounter_container">
+            <span class="recipeCountDisplay"></span>
+            <!-- Recipe Counter -->
+        </aside>
 
+        <section class="tags">
+            <!-- Search Tags Container  -->
         </section>
 
         <section class="recipeList" id="section">

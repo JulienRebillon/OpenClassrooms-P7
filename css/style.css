@@ -134,6 +134,7 @@ input {
 
 main {
     width: 100%;
+    position: relative;
 }
 
 .recipeList {
@@ -150,7 +151,7 @@ main {
 
 .dropdown-container {
     display: flex;
-    
+    margin-top: 20px;
 }
 
 .dropdown {
@@ -268,7 +269,25 @@ main {
 }
 
 
+/* RECIPE COUNTER */
 
+.recipeCounter_container {
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    width: 200px;
+    height: 50px;
+    z-index: 5;
+    
+}
+
+.recipeCountDisplay {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    font-family: Anton;
+    font-size: 24px;
+}
 
 
 /* SEARCH TAGS*/
