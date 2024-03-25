@@ -47,28 +47,6 @@ function outputTag () {
 
 //Add a submit event to the form and prevents default behavior.
 
-// searchbar.addEventListener('submit', e => {
-//     //check if input is empty
-//     if(input.value === "") {
-//         //Prevent default form behavior
-//         e.preventDefault();
-//     }
-//     //limit the number of tags to 5
-//     else if(output.children.length >= 4) {
-//         //Run the outputTag function
-//         outputTag();
-//         //disable the output {
-//             input.disabled = true;
-//         //Modify placeholder text
-//             input.placeholder = "Nombre maximum de critères de filtrage atteint.";
-//         }
-//     else {
-//         //Run the outputTag function
-//         outputTag();
-//         //Prevent default form behavior
-//         e.preventDefault();
-//     }
-// });
 
 // Add an input event listener to the search input field for 3 characters+ filtering
 input.addEventListener('input', function(event) {
@@ -158,37 +136,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //Function to close the tags
 
-// window.addEventListener('click', e => {
-//     if (e.target.classList.contains('remove-btn')) {
-//         e.target.parentElement.remove ();
-//         //disable the output {
-//         //    input.disabled = false;
-//         //Modify placeholder text
-//         //input.placeholder = "Ajouter un critère"; 
 
-//     }
-// })
 
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('fa-xmark')) {
         e.target.closest('.tag').remove();        
     }
 });
-
-
-// // Event listener to handle tag removal
-// output.addEventListener('click', function(event) {
-//     // Check if the clicked element has the class 'remove-btn'
-//     if (event.target.classList.contains('remove-btn')) {
-//         // Remove the parent element (the tag)
-//         event.target.parentElement.parentElement.remove();
-//         // Enable the search input
-//         input.disabled = false;
-//         // Reset the placeholder text
-//         input.placeholder = "Ajouter un critère";
-//     }
-// });
-
 
 
 //Create the recipe cards
@@ -356,33 +310,41 @@ function filterCards() {
 
         // Combine all card content into an array
         const cardContent = [cardName, cardDescription, ...cardIngredients];
+        
+        console.log('Tags:', tags);
+        console.log('CardContent:', cardContent);
 
         // Check if any tag matches any content
-        const matchesAnyTag = tags.some(tag => cardContent.includes(tag));
-        console.log(matchesAnyTag);
-        
+        const matchesAnyTag = tags.some(tag => containsTag(cardContent, tag));
+        console.log('MatchesAnyTag:', matchesAnyTag);
+
         // Set display style based on matching tags
         card.style.display = matchesAnyTag ? 'block' : 'none';
-        
-        
-        //count = matchesAnyTag.length;
 
-        
-
-        // // Increment the visible recipe count if the card matches the tags and is displayed
-        // if (card.style.display !== 'none') {
-        //     count++;
-        // }
-           
+        // Increment the visible recipe count if the card matches the tags and is displayed
+        if (card.style.display !== 'none') {
+            count++;
+        }
     });
-    console.log(count);
-    //console.log(matchesAnyTag);
-       // count = matchesAnyTag.length;
 
+    console.log('Visible Card Count:', count);
 
     // Update the recipe count display
-    //updateCountDisplay(count);
+    updateCountDisplay(count);
 }
+
+
+
+function containsTag(cardContent, tag) {
+    return cardContent.some(content => content.includes(tag));
+}
+
+
+
+
+
+
+
 
 // Define the function to observe changes in the output container
 function observeOutputChanges() {
