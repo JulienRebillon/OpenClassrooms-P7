@@ -1,10 +1,13 @@
+//Fetch date from the json file
 
+
+
+//import { recipes } from '../assets/data/recipes.js';
 
 const input = document.querySelector('.search');
 const searchbar = document.querySelector('.searchbar');
 const output = document.querySelector('.tags');
 const max = document.querySelector('.max');
-const recipeNotFound = document.querySelector('.RecipeNotFound');
 
 
 
@@ -49,27 +52,16 @@ input.addEventListener('input', function(event) {
 
 // Add an input event listener to the search input field for manual trigger of the search
 
-// function handleSearch() {
-//     // Get the input value
-//     const inputValue = input.value.trim();
-
-//     // Check if the input value is not empty
-//     if (inputValue !== "") {
-//         // Call the outputTag function with the input value
-//         outputTag(inputValue);
-//     }
-// }
-
 function handleSearch() {
     // Get the input value
     const inputValue = input.value.trim();
+
     // Check if the input value is not empty
     if (inputValue !== "") {
         // Call the outputTag function with the input value
-        outputTag();
+        outputTag(inputValue);
     }
 }
-
 
 // Event listener for the Enter key press
 input.addEventListener('keydown', function(event) {
@@ -78,19 +70,12 @@ input.addEventListener('keydown', function(event) {
         event.preventDefault();
         // Call the handleSearch function
         handleSearch();
-        
     }
 });
 
 // Event listener for the click on the search button
-//document.querySelector('.searchBtn').addEventListener('click', handleSearch);
+document.querySelector('.searchBtn').addEventListener('click', handleSearch);
 
-document.querySelector('.searchBtn').addEventListener('click', function(event) {
-    // Prevent the default form submission behavior
-    event.preventDefault();
-    // Call the handleSearch function
-    handleSearch();
-});
 
 
 
@@ -163,8 +148,8 @@ function RecipeCard(recipe) {
     this.appliance = recipe.appliance;
     this.ustensils = recipe.ustensils;
 
-    // Function to generate HTML for the card   
-
+    // Method to generate the HTML code for the card
+    
     this.generateCardHTML = function() {
         let cardHTML = `
             <div class="card">
@@ -268,86 +253,36 @@ dropdownToggles.forEach(dropdownToggle => {
 
 
 function filterCards() {
-    // Get the tags, trimming whitespace from each tag
     const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
     const cards = document.querySelectorAll('.card');
-
     let count = 0;
 
     cards.forEach(card => {
-        // Get the card name and description, trimming whitespace from each
         const cardName = card.querySelector('.card-title').textContent.trim().toLowerCase();
         const cardDescription = card.querySelector('.card-text').textContent.trim().toLowerCase();
-        
-        // Get the card ingredients, trimming whitespace from each
-        const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => ingredient.textContent.trim().toLowerCase());
+        const cardIngredients = Array.from(card.querySelectorAll('.ingredient-list li')).map(ingredient => 
+            ingredient.textContent.trim().toLowerCase());
 
-        // Combine all card content into an array
-        const cardContent = [cardName, cardDescription, ...cardIngredients];
-        
-        console.log('Tags:', tags);
-        console.log('CardContent:', cardContent);
+        let isVisible = false;
 
-        // Check if every tag matches any content
-        const matchesAnyTag = tags.every(tag => containsTag(cardContent, tag));
-        console.log('MatchesAnyTag:', matchesAnyTag);
+        tags.forEach(tag => {
+            const tagLower = tag.toLowerCase();
+            // Check if the tag matches the card name, description, or any ingredient
+            if (cardName.includes(tagLower) || cardDescription.includes(tagLower) || cardIngredients.some(ingredient => 
+                ingredient.includes(tagLower))) {
+                isVisible = true;
+            }
+        });
 
-        // Set display style based on matching tags
-        card.style.display = matchesAnyTag ? 'block' : 'none';
+        card.style.display = isVisible ? 'block' : 'none';
 
-        // Increment the visible recipe count if the card matches the tags and is displayed
-        if (card.style.display !== 'none') {
+        if (isVisible) {
             count++;
         }
     });
 
-    console.log('Visible Card Count:', count);
-
-    // Update the recipe count display
     updateCountDisplay(count);
 }
-
-
-
-function containsTag(cardContent, tag) {
-    return cardContent.some(content => content.includes(tag));
-}
-
-
-function searchRefresh() {
-
-    // Add an input event listener to the search input field for 3 characters+ filtering
-    searchbar.addEventListener('input', function(event) {
-        event.preventDefault(); // Prevent the default form submission behavior
-
-        // Get the input value
-        const inputValue = input.value.trim();  
-        
-        //const inputValue = searchbar.value.trim().toLowerCase();
-
-
-        // Check if the input value has at least 3 characters
-        if (inputValue.length >= 3) {
-            // Execute filterCards function
-            filterCards();
-        }
-    });
-}
-
-// Call searchRefresh function to enable live search filtering
-searchRefresh();
-
-
-// Display the error message if no recipe is displayed:
-function searchFailed() {
-    // Get the value of the search bar input and trim any whitespace
-    const searchValue = input.value.trim();
-    // Update the text content of the RecipeNotFound element
-    recipeNotFound.textContent = `Aucune recette ne contient ‘${searchValue}’, vous pouvez chercher « ${searchValue} », « poisson », etc.`;
-}
-
-
-
 
 
 
@@ -364,7 +299,7 @@ function observeOutputChanges() {
 // Call the function to observe changes in the output container
 observeOutputChanges();
 
-// Display the initial number of recipes
+// Display the initial list of recipes in the recipeList section
 filterCards();
 
 
@@ -387,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Update the number of recipes displayed
 
-function updateCountDisplay(count) {
+function updateCountDisplay(count = 0) {
     const recipeCountDisplay = document.querySelector('.recipeCountDisplay');    
     recipeCountDisplay.textContent = `${count} recettes`;    
 }

@@ -451,3 +451,12 @@ h3 {
     margin-top: 5px;
     color: #7a7a7a;
 }
+
+/* Search error */
+
+.recipeNotFound {
+    display: block;
+    font-family: Manrope;
+    color:#1B1B1B;
+    font-size: 24px;
+}
