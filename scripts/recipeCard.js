@@ -298,6 +298,8 @@ function filterCards() {
         // Increment the visible recipe count if the card matches the tags and is displayed
         if (card.style.display !== 'none') {
             count++;
+            // Update the recipe count display
+            updateCountDisplay(count);
         }
     });
 
