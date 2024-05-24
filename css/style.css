@@ -455,8 +455,9 @@ h3 {
 /* Search error */
 
 .recipeNotFound {
-    display: block;
+    display: none;
     font-family: Manrope;
     color:#1B1B1B;
     font-size: 24px;
+    padding-left: 20px;
 }
