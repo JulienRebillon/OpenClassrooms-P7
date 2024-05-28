@@ -20,9 +20,15 @@ function outputTag() {
     input.value = "";
 }
 
+function sanitizeInput(input) {
+    const sanitized = input.replace(/[^a-zA-Z0-9\sàâäéèêëîïôöùûüç,.'-]/g, '');
+    return sanitized.trim();
+}
+
 // Add event listener to input for filtering and tag creation
 input.addEventListener('input', function(event) {
-    const inputValue = input.value.trim().toLowerCase();
+    const inputValue = sanitizeInput(input.value);
+    input.value = inputValue;
     if (inputValue.length >= 3) {
         filterCards();
         searchFailed(inputValue);  // Pass the current input value
@@ -31,7 +37,7 @@ input.addEventListener('input', function(event) {
 
 // Handle search input and create tags
 function handleSearch() {
-    const inputValue = input.value.trim();
+    const inputValue = sanitizeInput(input.value.trim());
     if (inputValue !== "") {
         outputTag();
         filterCards();
@@ -135,7 +141,8 @@ dropdownToggles.forEach(dropdownToggle => {
     });
 
     dropdownSearchInput.addEventListener('input', function() {
-        const searchValue = dropdownSearchInput.value.toLowerCase();
+        const searchValue = sanitizeInput(dropdownSearchInput.value);
+        dropdownSearchInput.value = searchValue;
         if (searchValue.length >= 3) {
             dropdownItems.forEach(item => {
                 const text = item.textContent.toLowerCase();
