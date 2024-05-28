@@ -1,142 +1,98 @@
-//Fetch date from the json file
-
-
-
-//import { recipes } from '../assets/data/recipes.js';
-
 const input = document.querySelector('.search');
 const searchbar = document.querySelector('.searchbar');
 const output = document.querySelector('.tags');
-const max = document.querySelector('.max');
-
-
+const recipeNotFound = document.querySelector('.recipeNotFound');
+const recipeList = document.querySelector('.recipeList');
 
 console.log(recipes);
 
-
-//function ot create the search tags
-function outputTag () {
-    //Create the tag element, insert its input value
+// Function to create the search tags
+function outputTag() {
     const tagFormat = input.value;
-    const tag = `<span class="tag">
-    <b>${tagFormat}</b>
-    <span class="remove-btn">
-        <i class="fa-solid fa-xmark"></i>
-    </span>
-    </span>`;
-
-    //output the tag
+    const tag = `
+        <span class="tag">
+            <b>${tagFormat}</b>
+            <span class="remove-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+        </span>`;
     output.innerHTML += tag;
-
-    //clear the input
     input.value = "";
-
 }
 
+function sanitizeInput(input) {
+    const sanitized = input.replace(/[^a-zA-Z0-9\sàâäéèêëîïôöùûüç,.'-]/g, '');
+    return sanitized.trim();
+}
 
-//Add a submit event to the form and prevents default behavior.
-
-
-// Add an input event listener to the search input field for 3 characters+ filtering
+// Add event listener to input for filtering and tag creation
 input.addEventListener('input', function(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    
-    const inputValue = input.value.trim().toLowerCase();
-    
-    // Check if the input value has at least 3 characters
+    const inputValue = sanitizeInput(input.value);
+    input.value = inputValue;
     if (inputValue.length >= 3) {
-        // Execute search function
-        filterCards(inputValue);
+        filterCards();
+        searchFailed(inputValue);  // Pass the current input value
     }
 });
 
-// Add an input event listener to the search input field for manual trigger of the search
-
+// Handle search input and create tags
 function handleSearch() {
-    // Get the input value
-    const inputValue = input.value.trim();
-
-    // Check if the input value is not empty
+    const inputValue = sanitizeInput(input.value.trim());
     if (inputValue !== "") {
-        // Call the outputTag function with the input value
-        outputTag(inputValue);
+        outputTag();
+        filterCards();
+        searchFailed(inputValue);  // Pass the current input value
     }
 }
 
 // Event listener for the Enter key press
 input.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        // Prevent the default form submission behavior
         event.preventDefault();
-        // Call the handleSearch function
         handleSearch();
     }
 });
 
 // Event listener for the click on the search button
-document.querySelector('.searchBtn').addEventListener('click', handleSearch);
+document.querySelector('.searchBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+    handleSearch();
+});
 
-
-
-
-//Function to reverse the chevron in dropdown menus
-
-
+// Toggle dropdown menus and search within them
 document.addEventListener('DOMContentLoaded', function() {
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-    
     dropdownToggles.forEach(function(toggle) {
         let isOpen = false;
-        
         toggle.addEventListener('click', function() {
             const chevron = toggle.querySelector('.fa-chevron-down');
             const menu = toggle.nextElementSibling;
-            
-            if (isOpen) {
-                menu.classList.remove('show');
-                chevron.classList.remove('rotate180');
-            } else {
-                menu.classList.add('show');
-                chevron.classList.add('rotate180');
-            }
-            
+            isOpen ? menu.classList.remove('show') : menu.classList.add('show');
+            isOpen ? chevron.classList.remove('rotate180') : chevron.classList.add('rotate180');
             isOpen = !isOpen;
         });
-        
-        // Close the dropdown menu when clicking outside of it
         document.addEventListener('click', function(event) {
             if (!toggle.contains(event.target)) {
                 const chevron = toggle.querySelector('.fa-chevron-down');
                 const menu = toggle.nextElementSibling;
-                
                 menu.classList.remove('show');
                 chevron.classList.remove('rotate180');
-                
                 isOpen = false;
             }
         });
     });
 });
 
-
-
-
-
-
-//Function to close the tags
-
-
-
+// Remove tags on click
 document.addEventListener('click', function(e) {
     if (e.target.classList.contains('fa-xmark')) {
-        e.target.closest('.tag').remove();        
+        e.target.closest('.tag').remove();
+        filterCards();
+        searchFailed(input.value.trim().toLowerCase());  // Pass the current input value
     }
 });
 
-
-//Create the recipe cards
-
-
+// RecipeCard class to generate card HTML
 function RecipeCard(recipe) {
     this.id = recipe.id;
     this.image = recipe.image;
@@ -148,8 +104,6 @@ function RecipeCard(recipe) {
     this.appliance = recipe.appliance;
     this.ustensils = recipe.ustensils;
 
-    // Method to generate the HTML code for the card
-    
     this.generateCardHTML = function() {
         let cardHTML = `
             <div class="card">
@@ -160,12 +114,9 @@ function RecipeCard(recipe) {
                         <h2 class="card-title">${this.name}</h2>
                         <h3 class="rubrique">RECETTE</h3>
                         <p class="card-text">${this.description}</p>
-                        
-                        <h3>INGREDIENTS</h3>
-                        <div class="ingredient-container">`;
-    
-        // Add ingredients to the ingredient container
-        cardHTML += `<div class="ingredient-list">`;
+                        <h3>INGRÉDIENTS</h3>
+                        <div class="ingredient-container">
+                            <div class="ingredient-list">`;
         this.ingredients.forEach(ingredient => {
             cardHTML += `
                 <div class="ingredient">
@@ -174,83 +125,69 @@ function RecipeCard(recipe) {
                 </div>`;
         });
         cardHTML += `</div></div></div></div></div>`;
-    
         return cardHTML;
     };
-    
 }
 
-
-// // Dropdown menu filter function
-
-// Select all dropdown toggles
+// Filter function for dropdown menus
 const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-
-// Iterate over each dropdown toggle
 dropdownToggles.forEach(dropdownToggle => {
-    // Get the corresponding dropdown menu, search input, and items for the current toggle
     const dropdownMenu = dropdownToggle.nextElementSibling;
     const dropdownSearchInput = dropdownMenu.querySelector('.dropdown-search');
     const dropdownItems = dropdownMenu.querySelectorAll('li:not(:first-child)');
 
-    // Add click event listener to the dropdown toggle
     dropdownToggle.addEventListener('click', function() {
         dropdownMenu.classList.toggle('show');
     });
 
-    // Add input event listener to the dropdown search input
     dropdownSearchInput.addEventListener('input', function() {
-        const searchValue = dropdownSearchInput.value.toLowerCase();
-
-        // Check if the input has at least three characters
+        const searchValue = sanitizeInput(dropdownSearchInput.value);
+        dropdownSearchInput.value = searchValue;
         if (searchValue.length >= 3) {
-            // Start from index 0 to include all dropdown items
             dropdownItems.forEach(item => {
                 const text = item.textContent.toLowerCase();
-                // Check if the item's text contains the search value
-                if (text.includes(searchValue)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+                item.style.display = text.includes(searchValue) ? 'block' : 'none';
             });
-
-            dropdownMenu.classList.add('show'); // Ensure the dropdown menu stays open
+            dropdownMenu.classList.add('show');
         } else {
-            // If the input has less than three characters, reset the display of all items
             dropdownItems.forEach(item => {
                 item.style.display = 'block';
             });
-
-            dropdownMenu.classList.remove('show'); // Close the dropdown menu
+            dropdownMenu.classList.remove('show');
         }
     });
 
-    // Attach click event listener to each li element within the current dropdown menu
     dropdownItems.forEach(li => {
         li.addEventListener('click', function() {
-            // Get the text content of the clicked li element
             const tagText = this.textContent.trim();
-
-            // Create the tag element
             const tag = document.createElement('span');
             tag.classList.add('tag');
-            tag.innerHTML = `<b>${tagText}</b><span class="remove-btn"><span class="remove-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </span></span>`;
-
-            // Append the tag to the output container
+            tag.innerHTML = `<b>${tagText}</b><span class="remove-btn"><i class="fa-solid fa-xmark"></i></span>`;
             output.appendChild(tag);
+            filterCards();
+            searchFailed(input.value.trim().toLowerCase());  // Pass the current input value
         });
     });
 });
 
-
-
-
-// Search function
-
-
+// Filter cards based on tags
+// function filterCards() {
+//     const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
+//     const cards = document.querySelectorAll('.card');
+//     let count = 0;
+//     cards.forEach(card => {
+//         const cardName = card.querySelector('.card-title').textContent.trim().toLowerCase();
+//         const cardDescription = card.querySelector('.card-text').textContent.trim().toLowerCase();
+//         const cardIngredients = Array.from(card.querySelectorAll('.ingredient')).map(ingredient => ingredient.textContent.trim().toLowerCase());
+//         const cardContent = [cardName, cardDescription, ...cardIngredients];
+//         const matchesAnyTag = tags.every(tag => cardContent.some(content => content.includes(tag)));
+//         card.style.display = matchesAnyTag ? 'block' : 'none';
+//         if (card.style.display !== 'none') {
+//             count++;
+//         }
+//     });
+//     updateCountDisplay(count);
+// }
 
 function filterCards() {
     const tags = Array.from(document.querySelectorAll('.tag')).map(tag => tag.textContent.trim().toLowerCase());
@@ -286,45 +223,44 @@ function filterCards() {
 
 
 
+// Display error message if no recipe is found
+function searchFailed(searchValue) {
+    const recipeCount = document.querySelectorAll('.card[style="display: block;"]').length;
+    if (recipeCount === 0) {
+        recipeNotFound.textContent = `Aucune recette ne contient "${searchValue}", vous pouvez chercher « Tarte aux pommes », « poisson », etc.`;
+        recipeNotFound.style.display = 'block';
+    } else {
+        recipeNotFound.style.display = 'none';
+    }
+}
 
-
-
-
-// Define the function to observe changes in the output container
+// Observe changes in the output container
 function observeOutputChanges() {
     const observer = new MutationObserver(filterCards);
     observer.observe(output, { childList: true });
 }
-
-// Call the function to observe changes in the output container
 observeOutputChanges();
 
-// Display the initial list of recipes in the recipeList section
-filterCards();
-
-
-
-
-
-// ------------------------------------------------------
-
+// Create and display recipe cards
 document.addEventListener('DOMContentLoaded', function() {
-    const recipeList = document.querySelector('.recipeList');
     recipes.forEach(recipe => {
         recipe.image = `assets/images/${recipe.image}`;
-
         const card = new RecipeCard(recipe);
         const cardHTML = card.generateCardHTML();
         recipeList.innerHTML += cardHTML;
     });
+    displayMaxRecipes();
 });
 
-
-// Update the number of recipes displayed
-
-function updateCountDisplay(count = 0) {
-    const recipeCountDisplay = document.querySelector('.recipeCountDisplay');    
-    recipeCountDisplay.textContent = `${count} recettes`;    
+// Display the total number of recipes
+function displayMaxRecipes() {
+    const maxRecipeCount = document.querySelectorAll('.card').length;
+    updateCountDisplay(maxRecipeCount);
 }
 
-updateCountDisplay();
+// Update the recipe count display
+function updateCountDisplay(count) {
+    const recipeCountDisplay = document.querySelector('.recipeCountDisplay');
+    recipeCountDisplay.textContent = `${count} recettes`;
+}
+
